@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+  api:
+    image: target/consensource-api:local
+    build:
+      context: api
+      dockerfile: Dockerfile.dev
+      args:
+        - GIT_USERNAME=${GIT_USERNAME}
+        - GIT_PASSWORD=${GIT_PASSWORD}
+  client:
+    image: target/consensource-ui:local
+    build:
+      context: client
+      dockerfile: Dockerfile.dev
+  processor:
+    image: target/consensource-processor:local
+    build:
+      context: processor
+      dockerfile: Dockerfile.dev
+      args:
+        - GIT_USERNAME=${GIT_USERNAME}
+        - GIT_PASSWORD=${GIT_PASSWORD}
+  state-delta-subscriber:
+    image: target/consensource-ui:local
+    build:
+      context: state-delta-subscriber
+      dockerfile: Dockerfile.dev
+      args:
+        - GIT_USERNAME=${GIT_USERNAME}
+        - GIT_PASSWORD=${GIT_PASSWORD}

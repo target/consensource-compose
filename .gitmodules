@@ -1,0 +1,38 @@
+[submodule "api"]
+	path = api
+	url = https://github.com/target/consensource-api
+	branch = master
+	update = merge
+[submodule "cli"]
+	path = cli
+	url = https://github.com/target/consensource-cli
+	branch = master
+	update = merge
+[submodule "client"]
+	path = client
+	url = git@github.com:target/consensource-ui.git
+	branch = master
+	update = merge
+[submodule "state-delta-subscriber"]
+	path = state-delta-subscriber
+	url = https://github.com/target/consensource-sds
+	branch = master
+	update = merge
+[submodule "processor"]
+	path = processor
+	url = https://github.com/target/consensource-processor
+	branch = master
+	update = merge
+[submodule "database"]
+	path = database
+	url = https://github.com/target/consensource-database
+	branch = master
+	update = merge
+[submodule "common"]
+	path = common
+	url = https://github.com/target/consensource-common
+	branch = master
+	update = merge
+[submodule "ui"]
+	path = ui
+	url = https://github.com/target/consensource-ui

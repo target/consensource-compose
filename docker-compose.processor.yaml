@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+  processor:
+    image: target/consensource-processor:local
+    build:
+      context: processor
+      dockerfile: Dockerfile
