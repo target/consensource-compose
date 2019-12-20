@@ -1,0 +1,164 @@
+version: "3"
+
+volumes:
+  consensource-shared-data:
+
+services:
+  consensource-contract-builder:
+    image: consensource-contract-builder
+    container_name: consensource-contract-builder
+    build:
+      context: .
+      dockerfile: processor/Dockerfile.sabre
+    volumes:
+      - consensource-shared-data:/shared_data
+    entrypoint: |
+      bash -c "
+        while true; do curl -s http://sawtooth-rest-api:8008/state | grep -q head; if [ $$? -eq 0 ]; then break; fi; sleep 0.5; done;
+        sabre cr --create consensource --key /shared_data/my_key --owner $$(cat /shared_data/my_key.pub) --url http://sawtooth-rest-api:8008 --wait 30
+        sabre upload --filename /build/processor/consensource.yaml --key /shared_data/my_key --url http://sawtooth-rest-api:8008 --wait 30
+        sabre ns --create 3d0111 --key /shared_data/my_key --owner $$(cat /shared_data/my_key.pub) --url http://sawtooth-rest-api:8008 --wait 30
+        sabre perm 3d0111 consensource --key /shared_data/my_key --read --write --url http://sawtooth-rest-api:8008 --wait 30
+        echo '---------========= consensource contract is loaded =========---------'
+      "
+
+  cli:
+    image: target/consensource-cli:latest
+    container_name: consensource-cli
+    volumes:
+      - consensource-shared-data:/shared_data
+    entrypoint: |
+      bash -c "
+        if [ ! -f $HOME/.sawtooth/keys/root.priv ]; then
+          sawtooth keygen
+        fi;
+        mkdir -p /shared_data/keys && \
+          csrc genesis -o /shared_data/consensource-genesis.batch -K /shared_data/keys \
+              -g /cli/example-genesis.yaml;
+        tail -f /dev/null
+      "
+
+  ## Because the published client image is built with non-local config,
+  ## we default to using the local client image which has the config to
+  ## for our local services.
+  client:
+    image: target/consensource-ui:local
+    container_name: consensource-client
+    build:
+      context: ui
+      dockerfile: Dockerfile
+    volumes:
+      - ./client/public/:/usr/local/apache2/htdocs/
+    expose:
+      - 80
+    ports:
+      - "8080:80"
+
+  consensus-engine:
+    image: hyperledger/sawtooth-devmode-engine-rust:chime
+    container_name: consensource-consensus-engine
+    expose:
+      - 5050
+    ports:
+      - "5050:5050"
+    command: |
+      bash -c "
+        devmode-engine-rust -C tcp://validator:5050
+      "
+  validator:
+    image: hyperledger/sawtooth-validator:chime
+    container_name: consensource-validator
+    expose:
+      - 4004
+      - 8800
+    ports:
+      - "4004:4004"
+      - "8800:8800"
+    volumes:
+      - consensource-shared-data:/shared_data
+    entrypoint: |
+      bash -c "
+        sawadm keygen && \
+          sawtooth keygen my_key && \
+          sawset genesis -k /root/.sawtooth/keys/my_key.priv && \
+          cp /root/.sawtooth/keys/my_key.* /shared_data && \
+          sawset proposal create \
+          -k /root/.sawtooth/keys/my_key.priv \
+          sawtooth.swa.administrators=$$(cat /shared_data/my_key.pub) \
+          sawtooth.consensus.algorithm.name=Devmode \
+          sawtooth.consensus.algorithm.version=0.1 \
+          -o config.batch \
+          && sawadm genesis config-genesis.batch config.batch && \
+        sawtooth-validator -v \
+          --endpoint tcp://eth0:8800 \
+          --bind component:tcp://eth0:4004 \
+          --bind network:tcp://eth0:8800 \
+          --bind consensus:tcp://eth0:5050 \
+      "
+
+  sawtooth-rest-api:
+    image: hyperledger/sawtooth-rest-api:chime
+    container_name: sawtooth-rest-api
+    ports:
+      - "8008:8008"
+    depends_on:
+      - validator
+    entrypoint: sawtooth-rest-api -v -C tcp://validator:4004 --bind sawtooth-rest-api:8008
+
+  api:
+    image: target/consensource-api:latest
+    container_name: consensource-api
+    ports:
+      - "9009:9009"
+      - "9010:9010"
+    environment:
+      ROCKET_ADDRESS: "0.0.0.0"
+      ROCKET_PORT: "9009"
+      OAUTH_VALIDATION_URL: "https://oauth.iam.perf.target.com"
+    command: |
+      bash -c "
+        consensource-rest-api -v --dbhost postgres -C tcp://validator:4004
+      "
+  settings-tp:
+    image: hyperledger/sawtooth-settings-tp:chime
+    container_name: sawtooth-settings-tp
+    depends_on:
+      - validator
+    entrypoint: settings-tp -v -C tcp://validator:4004
+
+  sabre-tp:
+    image: hyperledger/sawtooth-sabre-tp:0.4
+    container_name: sawtooth-sabre-tp
+    depends_on:
+      - validator
+    entrypoint: sawtooth-sabre -vv --connect tcp://validator:4004
+
+  postgres:
+    image: postgres:alpine
+    container_name: consensource-db
+    volumes:
+      - ./database/tables:/docker-entrypoint-initdb.d
+    restart: always
+    environment:
+      POSTGRES_USER: cert-registry
+      POSTGRES_PASSWORD: cert-registry
+      POSTGRES_DB: cert-registry
+    ports:
+      - "5432:5432"
+    expose:
+      - 5432
+
+  adminer:
+    image: adminer
+    container_name: consensource-adminer
+    restart: always
+    ports:
+      - "8081:8080"
+
+  sds:
+    image: target/consensource-sds:latest
+    container_name: consensource-sds
+    command: |
+      bash -c "
+        consensource-sds --dbhost postgres -v -C tcp://validator:4004
+      "
