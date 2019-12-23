@@ -11,7 +11,7 @@ Each of the services required to run ConsenSource lives in it's own repo with it
 To get started with submodules, clone this repo with the following command:
 
 ```
-$ git clone --recurse-submodules git@github.com:consensource/docker-compose.git
+$ git clone --recurse-submodules https://github.com/target/consensource-compose.git
 ```
 
 If you already cloned but want submodules, run:
@@ -48,17 +48,17 @@ To run using only locally built images, run:
 $ docker-compose -f docker-compose.yaml -f docker-compose.local.yaml up
 ```
 
-### With Docker Hug images
+### With Docker Hub images
 
-To start the ConsenSource application using the latest images from Docker Hug, run the following command in the project's root directory:
+To start the ConsenSource application using the latest images from Docker Hub, run the following command in the project's root directory:
 
 ```
 $ ./docker-run.sh --run
 ```
 
-By default, the `docker-compose.yaml` file will run containers for images with the `:latest` tag. On your first run, these will be pulled down from Docker Hug.  
+By default, the `docker-compose.yaml` file will run containers for images with the `:latest` tag. On your first run, these will be pulled down from Docker Hub.  
 
-To pull the most recent images from Docker Hug at any time you may run :
+To pull the most recent images from Docker Hub at any time you may run :
 
 ```
 $ docker-compose pull --ignore-pull-failures
