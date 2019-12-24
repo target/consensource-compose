@@ -20,17 +20,17 @@ services:
         tail -f /dev/null
       "
 
-  ## Because the published client image is built with non-local config,
-  ## we default to using the local client image which has the config to 
+  ## Because the published UI image is built with non-local config,
+  ## we default to using the local UI image which has the config 
   ## for our local services.
-  client:
+  ui:
     image: target/consensource-ui:local
-    container_name: consensource-client
+    container_name: consensource-ui
     build:
       context: ui
       dockerfile: Dockerfile
     volumes:
-      - ./client/public/:/usr/local/apache2/htdocs/
+      - ./ui/public/:/usr/local/apache2/htdocs/
     expose:
       - 80
     ports:
