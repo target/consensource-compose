@@ -4,5 +4,5 @@ services:
   client:
     image: target/consensource-ui:local
     build:
-      context: client
+      context: ui
       dockerfile: Dockerfile
