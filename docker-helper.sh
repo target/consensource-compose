@@ -2,10 +2,10 @@
 
 ## Script to run additional docker-compose files that specify local services to build or run
 ## Usage examples:
-##   - ./docker-helper.sh --run
-##   - ./docker-helper.sh --build
-##   - ./docker-helper.sh --build api
-##   - ./docker-helper.sh --run api processor
+##   - ./docker-helper.sh --run (Runs default images pulled from Docker Hub)
+##   - ./docker-helper.sh --build (Builds default images pulled from Docker Hub)
+##   - ./docker-helper.sh --build api (Builds a local image of the api)
+##   - ./docker-helper.sh --run api processor (Runs with locally built images of the api and processor)
 
 cmd_base="docker-compose -f docker-compose.yaml"
 cmd_extra=""
