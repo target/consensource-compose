@@ -36,16 +36,16 @@ To make this simpler you can use `docker-helper.sh` with either a `--build` or `
 $ ./docker-helper.sh --run api
 ```
 
-To rebuild any local image, run:
+To rebuild any local image:
 
 ```
 $ ./docker-helper.sh --build <service-name>
 ```
 
-To run using only locally built images, run:
+To run using only locally built images:
 
 ```
-$ docker-compose -f docker-compose.yaml -f docker-compose.local.yaml up
+$ ./docker-helper.sh --build local
 ```
 
 ### With Docker Hub images
@@ -58,10 +58,22 @@ $ ./docker-run.sh --run
 
 By default, the `docker-compose.yaml` file will run containers for images with the `:latest` tag. On your first run, these will be pulled down from Docker Hub.  
 
-To pull the most recent images from Docker Hub at any time you may run :
+To pull the most recent images from Docker Hub:
 
 ```
 $ docker-compose pull --ignore-pull-failures
+```
+
+To run local images that have a `:local` tag:
+
+```
+$ ./docker-helper.sh --run <service-name>
+```
+
+To run with all local images:
+
+```
+$ ./docker-helper.sh --run local
 ```
 
 ### Working with Git Submodules
