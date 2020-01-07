@@ -5,6 +5,10 @@ services:
     image: target/consensource-api:local
     build:
       context: api
+  cli:
+    image: target/consensource-cli:local
+    build:
+      context: cli
   ui:
     image: target/consensource-ui:local
     build:
