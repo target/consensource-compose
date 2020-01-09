@@ -1,25 +1,24 @@
 #!/bin/sh
 
-## Script to run additional docker-compose files that specify local services to build or run
-## Usage examples:
-##   - ./docker-helper.sh --run (will run with all images from Docker Hub)
-##   - ./docker-helper.sh --build (will build images from Docker Hub)
-##   - ./docker-helper.sh --build api
-##   - ./docker-helper.sh --run api processor
-##   - ./docker-helper.sh --build local (will rebuild all images)
-##   - ./docker-helper.sh --run local (will run with all local images)
+## Script to run additional docker-compose files that specify local services to build or run.
+## Also can be used to pull down images from Docker Hub.
 
-cmd_base="docker-compose -f docker-compose.yaml"
-cmd_extra=""
-
-services=""
 all_services="api cli processor sds ui"
 
+function clean_up() {
+    docker-compose down
+}
+
 ## Run the specified images and perform a `docker-compose down` upon exit
-function run_containers() {
+function run_images() {
+    cmd=""
     exitcode=0
 
-    cmd="${cmd_base}${cmd_extra} up"
+    for service_name in "$@"; do
+        cmd="${cmd} -f docker-compose.$service_name.yaml"
+    done
+
+    cmd="docker-compose -f docker-compose.yaml ${cmd} up"
     $cmd
 
     test_exit=$?
@@ -28,33 +27,43 @@ function run_containers() {
         exitcode=1
     fi
 
-    trap docker-compose down EXIT
+    trap clean_up EXIT
     exit $exitcode
 }
 
 ## Rebuild the specified images
-function build_containers() {
-    cmd="${cmd_base}${cmd_extra} up -d --no-deps --build"
+function build_images() {
+    cmd=""
 
     ## Rebuild all services if `local` is passed
-    if [ $services == "local" ]; then
-        cmd="$cmd ${all_services}"
+    if [[ $1 == "local" ]]; then
+        cmd="docker-compose -f docker-compose.yaml -f docker-compose.local.yaml up -d --no-deps --build ${all_services}"
     else
-        cmd="$cmd ${services}"
+        services=""
+
+        for service_name in "$@"; do
+            services="$service_name ${services}"
+            cmd="${cmd} -f docker-compose.$service_name.yaml"
+        done
+
+        cmd="docker-compose -f docker-compose.yaml ${cmd} up -d --no-deps --build ${services}"
     fi
 
     $cmd
 }
 
-for service_name in "${@:2}"; do ## Skip first arg since that is either `--build` or `--run`
-    services="$service_name ${services}"
-    cmd_extra="${cmd_extra} -f docker-compose.$service_name.yaml"
-done
-
-if [ "$1" == "--run" ]; then
-    run_containers
-elif [ "$1" == "--build" ]; then
-    build_containers
+if [[ $1 == "--run" || $1 == "-r" ]]; then
+    run_images ${@:2}
+elif [[ $1 == "--build" || $1 == "-b" ]]; then
+    build_images ${@:2}
 else
-    echo 'ERROR: $1 is an unrecognized flag - use either --run or --build'
+    echo "
+ERROR: $1 is an unrecognized flag.
+
+Options:
+    -r, --run <service_names>      Run Docker images. Use 'local' for all local images, or specify one or more services.
+                                   No additional args wil run all images from Docker Hub (non-local).
+    -b, --build <service_names>    Build Docker images. Use 'local' for all local images, or specify one or more services.
+                                   No additional args wil run all images from Docker Hub (non-local).
+    "
 fi

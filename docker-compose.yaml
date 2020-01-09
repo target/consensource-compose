@@ -28,7 +28,6 @@ services:
     container_name: consensource-ui
     build:
       context: ui
-      dockerfile: Dockerfile
     volumes:
       - ./ui/public/:/usr/local/apache2/htdocs/
     expose:
@@ -47,6 +46,7 @@ services:
       bash -c "
         devmode-engine-rust -C tcp://validator:5050
       "
+
   validator:
     image: hyperledger/sawtooth-validator:chime
     container_name: consensource-validator
@@ -99,6 +99,7 @@ services:
       bash -c "
         consensource-rest-api -v --dbhost postgres -C tcp://validator:4004
       "
+
   settings-tp:
     image: hyperledger/sawtooth-settings-tp:chime
     container_name: sawtooth-settings-tp
@@ -113,6 +114,7 @@ services:
       bash -c "
         consensource-processor -v -C tcp://validator:4004
       "
+      
   postgres:
     image: postgres:alpine
     container_name: consensource-db

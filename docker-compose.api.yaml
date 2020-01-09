@@ -5,4 +5,3 @@ services:
     image: target/consensource-api:local
     build:
       context: api
-      dockerfile: Dockerfile

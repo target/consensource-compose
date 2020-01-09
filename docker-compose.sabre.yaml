@@ -46,7 +46,6 @@ services:
     container_name: consensource-client
     build:
       context: ui
-      dockerfile: Dockerfile
     volumes:
       - ./client/public/:/usr/local/apache2/htdocs/
     expose:

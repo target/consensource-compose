@@ -5,4 +5,3 @@ services:
     image: target/consensource-sds:local
     build:
       context: state-delta-subscriber
-      dockerfile: Dockerfile

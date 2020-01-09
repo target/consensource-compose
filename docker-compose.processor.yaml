@@ -5,4 +5,3 @@ services:
     image: target/consensource-processor:local
     build:
       context: processor
-      dockerfile: Dockerfile
