@@ -10,7 +10,7 @@
 	update = merge
 [submodule "ui"]
 	path = ui
-	url = git@github.com:target/consensource-ui.git
+	url = https://github.com/target/consensource-ui
 	branch = master
 	update = merge
 [submodule "state-delta-subscriber"]
