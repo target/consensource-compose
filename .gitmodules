@@ -8,8 +8,8 @@
 	url = https://github.com/target/consensource-cli
 	branch = master
 	update = merge
-[submodule "client"]
-	path = client
+[submodule "ui"]
+	path = ui
 	url = git@github.com:target/consensource-ui.git
 	branch = master
 	update = merge
@@ -33,6 +33,3 @@
 	url = https://github.com/target/consensource-common
 	branch = master
 	update = merge
-[submodule "ui"]
-	path = ui
-	url = https://github.com/target/consensource-ui
