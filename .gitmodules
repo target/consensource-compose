@@ -13,8 +13,8 @@
 	url = https://github.com/target/consensource-ui
 	branch = master
 	update = merge
-[submodule "state-delta-subscriber"]
-	path = state-delta-subscriber
+[submodule "sds"]
+	path = sds
 	url = https://github.com/target/consensource-sds
 	branch = master
 	update = merge
