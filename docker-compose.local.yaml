@@ -20,4 +20,4 @@ services:
   sds:
     image: target/consensource-ui:local
     build:
-      context: state-delta-subscriber
+      context: sds
