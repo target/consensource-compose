@@ -1,2 +1,2 @@
 [workspace]
-members = ["api", "cli", "database", "processor", "state-delta-subscriber", "common/common", "database"]
+members = ["api", "cli", "database", "processor", "sds", "common/common", "database"]
