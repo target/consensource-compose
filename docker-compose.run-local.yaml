@@ -123,9 +123,9 @@ services:
         - ./database/tables:/docker-entrypoint-initdb.d
     restart: always
     environment:
-        POSTGRES_USER: cert-registry
-        POSTGRES_PASSWORD: cert-registry
-        POSTGRES_DB: cert-registry
+        POSTGRES_USER: consensourcedb
+        POSTGRES_PASSWORD: consensourcedb
+        POSTGRES_DB: consensourcedb
     ports:
         - "5432:5432"
     expose:
