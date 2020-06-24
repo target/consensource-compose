@@ -5,7 +5,7 @@ volumes:
 
 services:
   cli:
-    image: target/consensource-cli:latest
+    image: docker.target.com/consensource/ingestion-service:latest
     container_name: consensource-cli
     volumes:
       - consensource-shared-data:/shared_data
@@ -21,7 +21,7 @@ services:
       "
 
   ## Because the published UI image is built with non-local config,
-  ## we default to using the local UI image which has the config 
+  ## we default to using the local UI image which has the config
   ## for our local services.
   ui:
     image: target/consensource-ui:local
@@ -48,7 +48,7 @@ services:
       "
 
   validator:
-    image: hyperledger/sawtooth-validator:chime
+    image: hyperledger/sawtooth-validator:1.2.4
     container_name: consensource-validator
     expose:
       - 4004
@@ -101,7 +101,7 @@ services:
       "
 
   settings-tp:
-    image: hyperledger/sawtooth-settings-tp:chime
+    image: hyperledger/sawtooth-settings-tp:1.2.4
     container_name: sawtooth-settings-tp
     depends_on:
       - validator
@@ -114,21 +114,21 @@ services:
       bash -c "
         consensource-processor -v -C tcp://validator:4004
       "
-      
+
   postgres:
     image: postgres:alpine
     container_name: consensource-db
     volumes:
-        - ./database/tables:/docker-entrypoint-initdb.d
+      - ./database/tables:/docker-entrypoint-initdb.d
     restart: always
     environment:
-        POSTGRES_USER: cert-registry
-        POSTGRES_PASSWORD: cert-registry
-        POSTGRES_DB: cert-registry
+      POSTGRES_USER: cert-registry
+      POSTGRES_PASSWORD: cert-registry
+      POSTGRES_DB: cert-registry
     ports:
-        - "5432:5432"
+      - "5432:5432"
     expose:
-        - 5432
+      - 5432
 
   adminer:
     image: adminer
