@@ -86,7 +86,7 @@ services:
     entrypoint: sawtooth-rest-api -v -C tcp://validator:4004 --bind sawtooth-rest-api:8008
 
   api:
-    image: target/consensource-api:latest
+    image: target/consensource-api:local
     container_name: consensource-api
     ports:
       - "9009:9009"
@@ -122,9 +122,9 @@ services:
       - ./database/tables:/docker-entrypoint-initdb.d
     restart: always
     environment:
-      POSTGRES_USER: cert-registry
-      POSTGRES_PASSWORD: cert-registry
-      POSTGRES_DB: cert-registry
+      POSTGRES_USER: consensourcedb
+      POSTGRES_PASSWORD: consensourcedb
+      POSTGRES_DB: consensourcedb
     ports:
       - "5432:5432"
     expose:
