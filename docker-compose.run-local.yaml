@@ -2,6 +2,8 @@ version: "3"
 
 volumes:
   consensource-shared-data:
+  cli-shared-bin:
+  cli-shared-keys:
 
 services:
   cli:
@@ -9,6 +11,8 @@ services:
     container_name: consensource-cli
     volumes:
       - consensource-shared-data:/shared_data
+      - cli-shared-bin:/cli/target/debug
+      - cli-shared-keys:/root/.sawtooth/keys
     entrypoint: |
       bash -c "
         if [ ! -f $HOME/.sawtooth/keys/root.priv ]; then
@@ -19,6 +23,19 @@ services:
               -g /cli/example-genesis.yaml;
         tail -f /dev/null
         while [ ! -f $HOME/no_dir ]; do echo ""; done
+      "
+
+  ingestion-service-oar:
+    image: ingestion-service-oar:local
+    container_name: ingestion-service-oar
+    volumes:
+      - cli-shared-bin:/ingestion-service/bin
+      - cli-shared-keys:/root/.sawtooth/keys
+    entrypoint: |
+      bash -c "
+        mkdir -p /ingestion-service/bin
+        tail -f /dev/null
+        while [ ! -f $HOME/no_dir ]; do echo "" ; done
       "
 
   ## Because the published UI image is built with non-local config,
