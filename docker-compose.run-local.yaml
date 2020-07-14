@@ -37,6 +37,19 @@ services:
         tail -f /dev/null
         while [ ! -f $HOME/no_dir ]; do echo "" ; done
       "
+  
+  ingestion-service-vmm:
+    image: ingestion-service-vmm:local
+    container_name: ingestion-service-vmm
+    volumes:
+      - cli-shared-bin:/ingestion-service/bin
+      - cli-shared-keys:/root/.sawtooth/keys
+    entrypoint: |
+      bash -c "
+        mkdir -p /ingestion-service/bin
+        tail -f /dev/null
+        while [ ! -f $HOME/no_dir ]; do echo "" ; done
+      "
 
   ## Because the published UI image is built with non-local config,
   ## we default to using the local UI image which has the config 
