@@ -25,22 +25,9 @@ services:
         while [ ! -f $HOME/no_dir ]; do echo ""; done
       "
 
-  ingestion-service-oar:
-    image: ingestion-service-oar:local
-    container_name: ingestion-service-oar
-    volumes:
-      - cli-shared-bin:/ingestion-service/bin
-      - cli-shared-keys:/root/.sawtooth/keys
-    entrypoint: |
-      bash -c "
-        mkdir -p /ingestion-service/bin
-        tail -f /dev/null
-        while [ ! -f $HOME/no_dir ]; do echo "" ; done
-      "
-  
-  ingestion-service-vmm:
-    image: ingestion-service-vmm:local
-    container_name: ingestion-service-vmm
+  ingestion-service:
+    image: ingestion-service:local
+    container_name: ingestion-service
     volumes:
       - cli-shared-bin:/ingestion-service/bin
       - cli-shared-keys:/root/.sawtooth/keys
