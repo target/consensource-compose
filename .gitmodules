@@ -11,7 +11,7 @@
 [submodule "ui"]
 	path = ui
 	url = https://github.com/target/consensource-ui
-	branch = master
+	branch = main
 	update = merge
 [submodule "sds"]
 	path = sds
