@@ -21,21 +21,6 @@ services:
         while [ ! -f $HOME/no_dir ]; do echo ""; done
       "
 
-  ## Because the published UI image is built with non-local config,
-  ## we default to using the local UI image which has the config 
-  ## for our local services.
-  ui:
-    image: target/consensource-ui:local
-    container_name: consensource-ui
-    build:
-      context: ui
-    volumes:
-      - ./ui/public/:/usr/local/apache2/htdocs/
-    expose:
-      - 80
-    ports:
-      - "8080:80"
-
   consensus-engine:
     image: hyperledger/sawtooth-devmode-engine-rust:chime
     container_name: consensource-consensus-engine

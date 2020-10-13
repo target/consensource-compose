@@ -76,6 +76,10 @@ To run with all local images:
 $ ./docker-helper.sh --run local
 ```
 
+### Running the UI
+
+The UI needs to be ran separately from the compose network. Please refer to the [UI ReadMe](ui/README.md) for instructions.
+
 ### Working with Git Submodules
 
 #### Manual Update of a Single Submodule

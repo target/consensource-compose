@@ -3,7 +3,7 @@
 ## Script to run additional docker-compose files that specify local services to build or run.
 ## Also can be used to pull down images from Docker Hub.
 
-all_services="api cli processor sds ui"
+all_services="api cli processor sds"
 
 function clean_up() {
     docker-compose down

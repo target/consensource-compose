@@ -9,10 +9,6 @@ services:
     image: target/consensource-cli:local
     build:
       context: cli
-  ui:
-    image: target/consensource-ui:local
-    build:
-      context: ui
   processor:
     image: target/consensource-processor:local
     build:
