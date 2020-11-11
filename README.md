@@ -1,3 +1,6 @@
+⚠️ This repo is no longer active! ⚠️
+Please visit [target/consensource repo](https://github.com/target/consensource) instead
+
 # ConsenSource docker-compose
 
 This application runs using separate Docker containers for the various components. These Docker images may be run together using the `docker-compose.yaml` file included within the repository.
