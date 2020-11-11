@@ -1,6 +1,6 @@
 ⚠️ This repo is no longer active! ⚠️
 
-Please visit [target/consensource repo](https://github.com/target/consensource) instead
+Please visit [target/consensource](https://github.com/target/consensource) instead
 
 # ConsenSource docker-compose
 
